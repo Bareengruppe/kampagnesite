@@ -1,0 +1,98 @@
+---
+const navItems = [
+  { label: "Home", href: "/" },
+  { label: "Collection", href: "/collection" },
+  { label: "Besøg museet", href: "/visit" },
+  { label: "Udforsk", href: "/store", hasDropdown: true },
+];
+---
+
+<header class="header">
+  <div class="container header-container">
+    <div class="logo">
+      <a href="/">
+        <span class="bareen">bareen</span>
+        <span class="separator">|</span>
+        <span class="glyptoteket">Glyptoteket</span>
+      </a>
+    </div>
+    <nav class="main-nav">
+      <ul>
+        {
+          navItems.map((item) => (
+            <li>
+              <a href={item.href}>
+                {item.label} {item.hasDropdown && <span class="dropdown-arrow">▼</span>}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header {
+    padding: 1rem 0;
+    position: absolute;
+    width: 100%;
+    z-index: 10;
+  }
+
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.125rem;
+  }
+
+  .bareen {
+    font-weight: 800;
+    font-style: bold;
+    font-style: italic;
+  }
+
+  .glyptoteket {
+    font-weight: 300;
+  }
+
+  .separator {
+    margin: 0 0.2rem;
+    opacity: 0.8;
+    font-weight: 100;
+  }
+
+  .main-nav ul {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .main-nav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+    font-weight: 300;
+    transition: opacity 0.3s;
+  }
+
+  .main-nav a:hover {
+    opacity: 0.7;
+  }
+
+  .dropdown-arrow {
+    font-size: 0.6rem;
+    margin-left: 0.2rem;
+    vertical-align: middle;
+  }
+</style>
