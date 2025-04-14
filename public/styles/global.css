@@ -1,0 +1,144 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Base styles */
+:root {
+  --color-black: #000;
+  --color-white: #fff;
+  --color-gray: #f5f5f5;
+  --color-dark-gray: #333;
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--color-black);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Layout */
+.grid {
+  display: grid;
+  gap: 2rem;
+}
+
+.grid-2 {
+  grid-template-columns: 1fr;
+}
+
+.grid-4 {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.section {
+  padding: 4rem 0;
+}
+
+.section-dark {
+  background-color: var(--color-black);
+  color: var(--color-white);
+}
+
+/* Typography */
+.text-center {
+  text-align: center;
+}
+
+.heading-large {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.heading-medium {
+  font-size: 1.75rem;
+  margin-bottom: 1rem;
+}
+
+.heading-small {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.divider {
+  display: inline-block;
+  margin: 0 0.5rem;
+  color: var(--color-dark-gray);
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  padding: 0.5rem 1.5rem;
+  background: var(--color-black);
+  color: var(--color-white);
+  border: none;
+  cursor: pointer;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--color-black);
+  color: var(--color-black);
+}
+
+.btn-outline:hover {
+  background: var(--color-black);
+  color: var(--color-white);
+}
+
+/* Form elements */
+input {
+  padding: 0.5rem;
+  border: 1px solid var(--color-dark-gray);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+/* Media queries */
+@media (min-width: 768px) {
+  .grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
