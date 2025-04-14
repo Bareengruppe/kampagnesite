@@ -1,0 +1,46 @@
+---
+import Cards from "./Cards.astro";
+
+const url = "https://dxovplvdzgxfcdujfcov.supabase.co/rest/v1/bareen-glyp";
+const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4b3ZwbHZkemd4ZmNkdWpmY292Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzNTUxNTcsImV4cCI6MjA1OTkzMTE1N30.Qp7F7TSekQcPIw8qAb2a2sBR2XEIvPOlI2kscNH3YB4";
+
+const options = {
+  headers: {
+    apikey: key,
+  },
+};
+
+const request = await fetch(url, options);
+const data = await request.json();
+
+console.log("first item", data[3]);
+---
+
+<div class="collection">
+  <div class="header">
+    <h1>Collection</h1>
+    <p>Udforsk vores unikke street wear inspireret af kunst</p>
+  </div>
+  <div class="products">
+    {
+      data.map((product) => {
+        return <Cards data={product} />;
+      })
+    }
+  </div>
+</div>
+
+<style>
+  .header {
+    height: 125px;
+    width: 800px;
+    margin: 0 auto;
+  }
+  .collection {
+    margin: 6rem auto;
+  }
+  h1,
+  p {
+    text-align: center;
+  }
+</style>

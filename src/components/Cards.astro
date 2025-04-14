@@ -1,0 +1,23 @@
+---
+const { data } = Astro.props;
+---
+
+<a href=`/products/${data.slug}`>
+  <div class="grid_4_1">
+    <img src=`${data.img[0]}` alt="Bareen product" />
+    <img src=`${data.img[1]}` alt="Bareen product" />
+    <img src=`${data.img[2]}` alt="Bareen product" />
+    <img src=`${data.img[3]}` alt="Bareen product" />
+  </div>
+</a>
+
+<style>
+  .grid_4_1 {
+    gap: 30px;
+    width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    margin-bottom: 30px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+</style>

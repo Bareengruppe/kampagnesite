@@ -1,0 +1,32 @@
+---
+import Layout from "../../layouts/Layout.astro";
+export async function getStaticPaths() {
+  const url = "https://dxovplvdzgxfcdujfcov.supabase.co/rest/v1/bareen-glyp";
+  const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4b3ZwbHZkemd4ZmNkdWpmY292Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzNTUxNTcsImV4cCI6MjA1OTkzMTE1N30.Qp7F7TSekQcPIw8qAb2a2sBR2XEIvPOlI2kscNH3YB4";
+
+  const options = {
+    headers: {
+      apikey: key,
+    },
+  };
+
+  const request = await fetch(url, options);
+  const data = await request.json();
+
+  return data.map((item) => {
+    return {
+      params: { slug: item.slug },
+      props: { item },
+    };
+  });
+}
+
+const { item } = Astro.props;
+console.log(item);
+---
+
+<Layout>
+  <div>
+    <img src=`${item.img[4]}` alt="" />
+  </div>
+</Layout>
