@@ -1,6 +1,13 @@
 ---
 import Cards from "./Cards.astro";
 
+type Product = {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+};
+
 const url = "https://dxovplvdzgxfcdujfcov.supabase.co/rest/v1/bareen-glyp";
 const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4b3ZwbHZkemd4ZmNkdWpmY292Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzNTUxNTcsImV4cCI6MjA1OTkzMTE1N30.Qp7F7TSekQcPIw8qAb2a2sBR2XEIvPOlI2kscNH3YB4";
 
@@ -10,10 +17,13 @@ const options = {
   },
 };
 
-const request = await fetch(url, options);
-const data = await request.json();
-
-console.log("first item", data[3]);
+let data: Product[] = [];
+try {
+  const request = await fetch(url, options);
+  data = await request.json();
+} catch (error) {
+  console.error("Error fetching data:", error);
+}
 ---
 
 <div class="collection">
@@ -23,7 +33,7 @@ console.log("first item", data[3]);
   </div>
   <div class="products">
     {
-      data.map((product) => {
+      data.map((product: Product) => {
         return <Cards data={product} />;
       })
     }
@@ -31,9 +41,14 @@ console.log("first item", data[3]);
 </div>
 
 <style>
+  .product {
+    display: grid;
+    padding: 2rem;
+  }
+
   .header {
     height: 125px;
-    width: 800px;
+    width: 100%;
     margin: 0 auto;
   }
   .collection {
