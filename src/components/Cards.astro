@@ -4,42 +4,46 @@ const { data } = Astro.props;
 
 <a href={`/products/${data.slug}`} class="card">
   <div class="grid_4_1">
-    <div class="card-item">
+    <article class="card-item">
       <img src={`${data.img[0]}`} alt="Bareen product" />
       <div class="overlay">
         <div class="overlay-content">
           <p class="collection">{data.collection}</p>
           <p class="product-name">{data.name}</p>
+          <p class="price">{data.price} kr</p>
         </div>
       </div>
-    </div>
-    <div class="card-item">
+    </article>
+    <article class="card-item">
       <img src={`${data.img[1]}`} alt="Bareen product" />
       <div class="overlay">
         <div class="overlay-content">
           <p class="collection">{data.collection}</p>
           <p class="product-name">{data.name}</p>
+          <p class="price">{data.price} kr</p>
         </div>
       </div>
-    </div>
-    <div class="card-item">
+    </article>
+    <article class="card-item">
       <img src={`${data.img[2]}`} alt="Bareen product" />
       <div class="overlay">
         <div class="overlay-content">
           <p class="collection">{data.collection}</p>
           <p class="product-name">{data.name}</p>
+          <p class="price">{data.price} kr</p>
         </div>
       </div>
-    </div>
-    <div class="card-item">
+    </article>
+    <article class="card-item">
       <img src={`${data.img[3]}`} alt="Bareen product" />
       <div class="overlay">
         <div class="overlay-content">
           <p class="collection">{data.collection}</p>
           <p class="product-name">{data.name}</p>
+          <p class="price">{data.price} kr</p>
         </div>
       </div>
-    </div>
+    </article>
   </div>
 </a>
 
@@ -71,11 +75,11 @@ const { data } = Astro.props;
 
   .overlay {
     position: absolute;
-    top: 0;
+    bottom: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.4);
     opacity: 0;
     transition: opacity 0.3s ease;
     display: flex;
