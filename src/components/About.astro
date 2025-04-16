@@ -1,0 +1,57 @@
+---
+import statueImage from "../assets/statue1.png";
+---
+
+<section class="about-section">
+  <div class="background-color">
+    <div class="content">
+      <h2>En unik fusion af moderne streetwear og historisk kunst</h2>
+      <p>Samarbejdet mellem Bareen og Glyptoteket skaber en spændende synergi mellem nutidig mode og tidløs kunst. Her mødes minimalistisk streetwear med værker fra fortiden, hvilket giver en ny dimension til begge verdener. Oplev, hvordan denne fusion udfordrer konventionerne og inspirerer til kreativitet.</p>
+      <p>Vores kollektion er ikke kun tøj; det er en fortælling om kultur, historie og kunstnerisk udtryk. Hvert stykke er designet med omhu og respekt for både streetwear-traditionen og de kunstværker, der inspirerer os. Ved at bære vores tøj bærer du også en del af denne historie.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-section {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background:
+      url(../assets/statue1.png) center/cover no-repeat,
+      #1a1a1a;
+    background-attachment: fixed;
+    height: 120vh;
+    color: white;
+    padding: 50px;
+  }
+
+  .content {
+    max-width: 400px;
+    padding: 20px;
+    border-radius: 8px;
+    z-index: 1000;
+  }
+
+  .content h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+  }
+
+  .content p {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+
+  @media (max-width: 768px) {
+    .about-section {
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .content {
+      max-width: 90%;
+    }
+  }
+</style>
