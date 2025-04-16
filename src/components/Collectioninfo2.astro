@@ -1,0 +1,45 @@
+---
+import studioshot from "../assets/studioshot.png";
+---
+
+<section>
+  <div class="text-box">
+    <h2>Fusion af Mode og Klassisk Kunst</h2>
+    <p>Oplev den unikke kombination af moderne streetwear og tidløs kunst. Vores kollektioner er skabt med materialer af høj kvalitet, der sikrer både stil og holdbarhed. Begrænsede udgaver giver dig muligheden for at eje noget helt særligt.</p>
+  </div>
+
+  <div class="img-box">
+    <img src={studioshot.src} alt="studioshoot of the black oversize hoodie" />
+  </div>
+</section>
+
+<style>
+  section {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin: 50px auto;
+    width: 100%;
+    max-width: 1500px;
+    padding: 50px;
+  }
+
+  .text-box {
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    margin: 50px auto;
+    gap: 20px;
+  }
+
+  @media (min-width: 1000px) {
+    section {
+      grid-template-columns: repeat(2, 1fr);
+      min-width: 100%;
+    }
+
+    .text-box {
+      max-width: 400px;
+    }
+  }
+</style>
