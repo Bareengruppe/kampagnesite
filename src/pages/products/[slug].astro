@@ -26,7 +26,152 @@ console.log(item);
 ---
 
 <Layout>
-  <div>
-    <img src=`${item.img[4]}` alt="" />
+  <div class="grid_2 procontainer">
+    <div>
+      <img src=`${item.img[4]}` alt="" />
+      <img src=`${item.img[0]}` alt="" />
+      <img src=`${item.img[1]}` alt="" />
+      <img src=`${item.img[2]}` alt="" />
+      <img src=`${item.img[3]}` alt="" />
+    </div>
+    <div class="productbox flexcol">
+      <div class="flexrow chainlink">
+        <a href="../">Forside</a>
+        <p>&gt;</p>
+        <a href=`${item.slug}`>{item.slug}</a>
+      </div>
+      <h2>{item.name} - {item.collection}</h2>
+      <h3>{item.price} kr</h3>
+      <p>{item.description}</p>
+      <div class="flexcol">
+        <p>STØRRELSE</p>
+        <div class="flexrow">
+          {item.sizeletter.s && <div class="box">S</div>}
+          {item.sizeletter.m && <div class="box">M</div>}
+          {item.sizeletter.l && <div class="box">L</div>}
+        </div>
+      </div>
+      <div class="flexcol">
+        <div class="flexrow">
+          <div class="kurvbox">Læg i kurv</div>
+          <div class="box"></div>
+        </div>
+        <div class="nubox">Køb nu</div>
+      </div>
+      <div class="infoflexcol">
+        <p>KOMPOSITION</p>
+        <ul>
+          <li>{item.komposition[0]}</li>
+          <li>{item.komposition[1]}</li>
+        </ul>
+      </div>
+      <div class="infoflexcol">
+        <p>VASK</p>
+        <p>{item.wash}</p>
+      </div>
+      <div class="infoflexcol">
+        <p>STØRRELSE</p>
+        <p>{item.size}</p>
+      </div>
+    </div>
   </div>
 </Layout>
+
+<style>
+  p {
+    font-size: 90%;
+  }
+  .chainlink {
+    font-size: 80%;
+  }
+  ul {
+    padding: 0 1rem;
+  }
+  li {
+    font-size: 90%;
+  }
+  .procontainer {
+    width: 100%;
+    max-width: 1300px;
+    margin: auto;
+    padding: 5rem 1rem;
+    position: relative;
+  }
+  .grid_2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+  }
+  .flexrow {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+  }
+  .flexcol {
+    gap: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+  .infoflexcol {
+    gap: 5px;
+    display: flex;
+    flex-direction: column;
+  }
+  img {
+    margin-bottom: 10px;
+  }
+  .productbox {
+    width: 100%;
+    height: 750px;
+    padding: 0 1rem;
+    margin: 0 auto;
+    position: sticky;
+    top: 5%;
+  }
+  .box {
+    width: 60px;
+    height: 50px;
+    border: 2px solid rgba(0, 0, 0, 0.209);
+    align-content: center;
+    text-align: center;
+    background-color: white;
+    transition:
+      background-color 0.2s ease-in,
+      color 0.2s ease-in;
+  }
+  .box:hover {
+    background-color: rgb(34, 34, 34);
+    color: white;
+  }
+  .kurvbox {
+    width: 100%;
+    height: 50px;
+    color: white;
+    border: 2px solid rgba(0, 0, 0, 0.209);
+    align-content: center;
+    text-align: center;
+    background-color: rgb(14, 14, 14);
+    transition:
+      background-color 0.15s ease-in,
+      color 0.15s ease-in;
+  }
+  .kurvbox:hover {
+    background-color: rgb(255, 255, 255);
+    color: rgb(14, 14, 14);
+  }
+  .nubox {
+    width: 100%;
+    height: 50px;
+    border: 2px solid rgba(0, 0, 0, 0.209);
+    align-content: center;
+    text-align: center;
+    background-color: white;
+    transition:
+      background-color 0.15s ease-in,
+      color 0.15s ease-in;
+  }
+  .nubox:hover {
+    background-color: rgb(34, 34, 34);
+    color: white;
+  }
+</style>
