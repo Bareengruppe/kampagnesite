@@ -1,8 +1,9 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+
 export async function getStaticPaths() {
-  const url = "https://dxovplvdzgxfcdujfcov.supabase.co/rest/v1/bareen-glyp";
-  const key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4b3ZwbHZkemd4ZmNkdWpmY292Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzNTUxNTcsImV4cCI6MjA1OTkzMTE1N30.Qp7F7TSekQcPIw8qAb2a2sBR2XEIvPOlI2kscNH3YB4";
+  const url = import.meta.env.SUPABASE_URL || "https://dxovplvdzgxfcdujfcov.supabase.co/rest/v1/bareen-glyp";
+  const key = import.meta.env.SUPABASE_KEY || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR4b3ZwbHZkemd4ZmNkdWpmY292Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQzNTUxNTcsImV4cCI6MjA1OTkzMTE1N30.Qp7F7TSekQcPIw8qAb2a2sBR2XEIvPOlI2kscNH3YB4";
 
   const options = {
     headers: {
@@ -10,88 +11,182 @@ export async function getStaticPaths() {
     },
   };
 
-  const request = await fetch(url, options);
-  const data = await request.json();
+  try {
+    const request = await fetch(url, options);
 
-  return data.map((item) => {
-    return {
-      params: { slug: item.slug },
-      props: { item },
-    };
-  });
+    if (!request.ok) {
+      throw new Error(`Failed to fetch data: ${request.status}`);
+    }
+
+    const data = await request.json();
+
+    return data.map((item) => {
+      return {
+        params: { slug: item.slug },
+        props: { item },
+      };
+    });
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
+  }
 }
 
 const { item } = Astro.props;
-console.log(item);
+
+// Current main image (default to first image)
+let mainImageIndex = 0;
 ---
 
 <Layout>
-  <div class="grid_2 procontainer">
-    <div>
-      <img src={item.img[4]} alt="" />
-      <img src={item.img[0]} alt="" />
-      <img src={item.img[1]} alt="" />
-      <img src={item.img[2]} alt="" />
-      <img src={item.img[3]} alt="" />
-    </div>
-    <div class="productbox flexcol">
-      <div class="flexrow chainlink">
-        <a href="../">Forside</a>
-        <p>&gt;</p>
-        <a href={item.slug}>{item.name}</a>
-      </div>
-      <p>{item.collection}</p>
-      <h2>{item.name}</h2>
-      <h3>{item.price} kr</h3>
-      <p>{item.description}</p>
-      <div class="flexcol">
-        <p>STØRRELSE</p>
-        <div class="flexrow">
-          {item.sizeletter.XS && <div class="box">XS</div>}
-          {item.sizeletter.S && <div class="box">S</div>}
-          {item.sizeletter.M && <div class="box">M</div>}
-          {item.sizeletter.L && <div class="box">L</div>}
-          {item.sizeletter.XL && <div class="box">XL</div>}
+  <div class="procontainer">
+    <div class="grid_2">
+      <div class="product-images">
+        <!-- Main product image -->
+        <div class="main-image">
+          <img src={item.img[mainImageIndex] || "/placeholder.svg"} alt={`${item.name} - Main image`} id="main-product-image" />
+        </div>
+
+        <!-- Thumbnails gallery -->
+        <div class="thumbnails">
+          {
+            item.img.map((image, index) => (
+              <div class={`thumbnail ${index === mainImageIndex ? "active" : ""}`}>
+                <img src={image || "/placeholder.svg"} alt={`${item.name} - Thumbnail ${index + 1}`} data-index={index} loading="lazy" />
+              </div>
+            ))
+          }
         </div>
       </div>
-      <div class="flexcol">
-        <div class="flexrow">
-          <div class="kurvbox">Læg i kurv</div>
-          <div class="box"></div>
+
+      <div class="productbox flexcol">
+        <!-- Breadcrumb navigation -->
+        <div class="flexrow chainlink">
+          <a href="../">Forside</a>
+          <p>&gt;</p>
+          <a href={item.slug}>{item.name}</a>
         </div>
-        <div class="nubox">Køb nu</div>
-      </div>
-      <div class="infoflexcol">
-        <p>KOMPOSITION</p>
-        <ul>
-          {item.komposition.map((comp, index) => <li key={index}>{comp}</li>)}
-        </ul>
-      </div>
-      <div class="infoflexcol">
-        <p>VASK</p>
-        <p>{item.wash}</p>
-      </div>
-      <div class="infoflexcol">
-        <p>STØRRELSE</p>
-        <p>{item.size}</p>
+
+        <!-- Product details -->
+        <p class="collection">{item.collection}</p>
+        <h2 class="product-name">{item.name}</h2>
+        <h3 class="product-price">{item.price} kr</h3>
+        <p class="product-description">{item.description}</p>
+
+        <!-- Size selection -->
+        <div class="flexcol size-section">
+          <p>STØRRELSE <span class="size-message" id="size-message"></span></p>
+          <div class="flexrow size-options">
+            {
+              item.sizeletter.XS && (
+                <div class="box size-box" data-size="XS">
+                  XS
+                </div>
+              )
+            }
+            {
+              item.sizeletter.S && (
+                <div class="box size-box" data-size="S">
+                  S
+                </div>
+              )
+            }
+            {
+              item.sizeletter.M && (
+                <div class="box size-box" data-size="M">
+                  M
+                </div>
+              )
+            }
+            {
+              item.sizeletter.L && (
+                <div class="box size-box" data-size="L">
+                  L
+                </div>
+              )
+            }
+            {
+              item.sizeletter.XL && (
+                <div class="box size-box" data-size="XL">
+                  XL
+                </div>
+              )
+            }
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flexcol action-section">
+          <div class="flexrow">
+            <button class="kurvbox" id="add-to-cart">Læg i kurv</button>
+          </div>
+          <button class="nubox" id="buy-now">Køb nu</button>
+          <div id="cart-message" class="cart-message"></div>
+        </div>
+
+        <!-- Product details sections -->
+        <div class="infoflexcol details-section">
+          <div class="detail-header">
+            <p>KOMPOSITION</p>
+            <span class="toggle-icon">+</span>
+          </div>
+          <div class="detail-content">
+            <ul>
+              {item.komposition.map((comp) => <li>{comp}</li>)}
+            </ul>
+          </div>
+        </div>
+
+        <div class="infoflexcol details-section">
+          <div class="detail-header">
+            <p>VASK</p>
+            <span class="toggle-icon">+</span>
+          </div>
+          <div class="detail-content">
+            <p>{item.wash}</p>
+          </div>
+        </div>
+
+        <div class="infoflexcol details-section">
+          <div class="detail-header">
+            <p>STØRRELSE</p>
+            <span class="toggle-icon">+</span>
+          </div>
+          <div class="detail-content">
+            <p>{item.size}</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </Layout>
 
 <style>
+  /* Base styles */
   p {
     font-size: 90%;
+    margin: 0;
   }
+
   .chainlink {
     font-size: 80%;
   }
+
   ul {
     padding: 0 1rem;
+    margin: 0;
   }
+
   li {
     font-size: 90%;
   }
+
+  h2,
+  h3 {
+    margin: 0;
+  }
+
+  /* Layout containers */
   .procontainer {
     width: 100%;
     max-width: 1300px;
@@ -99,29 +194,79 @@ console.log(item);
     padding: 5rem 1rem;
     position: relative;
   }
+
   .grid_2 {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 40px;
   }
+
   .flexrow {
     display: flex;
     flex-direction: row;
     gap: 15px;
+    align-items: center;
   }
+
   .flexcol {
     gap: 15px;
     display: flex;
     flex-direction: column;
   }
+
   .infoflexcol {
     gap: 5px;
     display: flex;
     flex-direction: column;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
   }
-  img {
+
+  /* Product images */
+  .product-images {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .main-image {
+    width: 100%;
     margin-bottom: 10px;
   }
+
+  .main-image img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  .thumbnails {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .thumbnail {
+    width: calc(20% - 8px);
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+
+  .thumbnail:hover {
+    opacity: 1;
+  }
+
+  .thumbnail.active {
+    opacity: 1;
+  }
+
+  .thumbnail img {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Product details */
   .productbox {
     width: 100%;
     height: 750px;
@@ -130,50 +275,277 @@ console.log(item);
     position: sticky;
     top: 5%;
   }
+
+  .product-name {
+    font-size: 1.8rem;
+    font-weight: 500;
+  }
+
+  .product-price {
+    font-size: 1.3rem;
+    font-weight: 500;
+  }
+
+  .collection {
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 85%;
+  }
+
+  /* Size selection */
+  .size-section {
+    margin-top: 10px;
+  }
+
+  .size-message {
+    font-size: 80%;
+    color: #d32f2f;
+    margin-left: 10px;
+    display: none;
+  }
+
+  .size-options {
+    flex-wrap: wrap;
+  }
+
   .box {
     width: 60px;
     height: 50px;
-    border: 2px solid rgba(0, 0, 0, 0.209);
-    align-content: center;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     background-color: white;
     transition:
       background-color 0.2s ease-in,
       color 0.2s ease-in;
+    cursor: pointer;
   }
+
   .box:hover {
     background-color: rgb(34, 34, 34);
     color: white;
   }
+
+  .box.selected {
+    background-color: rgb(34, 34, 34);
+    color: white;
+  }
+
+  /* Action buttons */
   .kurvbox {
     width: 100%;
     height: 50px;
     color: white;
     border: 2px solid rgba(0, 0, 0, 0.209);
-    align-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     background-color: rgb(14, 14, 14);
     transition:
       background-color 0.15s ease-in,
       color 0.15s ease-in;
+    cursor: pointer;
   }
+
   .kurvbox:hover {
     background-color: rgb(255, 255, 255);
     color: rgb(14, 14, 14);
   }
+
   .nubox {
     width: 100%;
     height: 50px;
     border: 2px solid rgba(0, 0, 0, 0.209);
-    align-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
     background-color: white;
     transition:
       background-color 0.15s ease-in,
       color 0.15s ease-in;
+    cursor: pointer;
   }
+
   .nubox:hover {
     background-color: rgb(34, 34, 34);
     color: white;
   }
+
+  /* Cart message */
+  .cart-message {
+    text-align: center;
+    font-size: 85%;
+    color: #388e3c;
+    min-height: 20px;
+    display: none;
+  }
+
+  /* Product details sections */
+  .detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .toggle-icon {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  .detail-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    padding-left: 5px;
+  }
+
+  .details-section.active .detail-content {
+    max-height: 200px;
+  }
+
+  .details-section.active .toggle-icon {
+    content: "-";
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .grid_2 {
+      grid-template-columns: 1fr;
+    }
+
+    .productbox {
+      position: relative;
+      height: auto;
+      top: 0;
+      padding: 0;
+    }
+
+    .detail-content {
+      max-height: 200px;
+    }
+
+    .thumbnail {
+      width: calc(25% - 8px);
+    }
+  }
 </style>
+
+<script>
+  // Initialize selected size
+  let selectedSize = "";
+
+  // Get DOM elements
+  const mainImage = document.getElementById("main-product-image");
+  const thumbnails = document.querySelectorAll(".thumbnail img");
+  const sizeBoxes = document.querySelectorAll(".size-box");
+  const sizeMessage = document.getElementById("size-message");
+  const addToCartBtn = document.getElementById("add-to-cart");
+  const buyNowBtn = document.getElementById("buy-now");
+  const cartMessage = document.getElementById("cart-message");
+  const detailSections = document.querySelectorAll(".details-section");
+
+  thumbnails.forEach((thumbnail) => {
+    thumbnail.addEventListener("click", () => {
+      const index = thumbnail.getAttribute("data-index");
+
+      // Update main image
+      if (mainImage && index !== null) {
+        mainImage.src = thumbnail.src;
+
+        // Update active thumbnail
+        document.querySelectorAll(".thumbnail").forEach((thumb, i) => {
+          if (i.toString() === index) {
+            thumb.classList.add("active");
+          } else {
+            thumb.classList.remove("active");
+          }
+        });
+      }
+    });
+  });
+
+  // Size selection functionality
+  sizeBoxes.forEach((box) => {
+    box.addEventListener("click", () => {
+      // Clear previous selection
+      sizeBoxes.forEach((b) => b.classList.remove("selected"));
+
+      // Set new selection
+      box.classList.add("selected");
+      selectedSize = box.getAttribute("data-size");
+
+      // Clear size warning if present
+      if (sizeMessage) {
+        sizeMessage.style.display = "none";
+      }
+    });
+  });
+
+  // Add to cart functionality
+  if (addToCartBtn) {
+    addToCartBtn.addEventListener("click", () => {
+      if (!selectedSize) {
+        // Show size warning
+        if (sizeMessage) {
+          sizeMessage.textContent = "Vælg venligst en størrelse";
+          sizeMessage.style.display = "inline";
+        }
+        return;
+      }
+
+      // Show success message
+      if (cartMessage) {
+        cartMessage.textContent = `Produkt i størrelse ${selectedSize} tilføjet til kurven`;
+        cartMessage.style.display = "block";
+
+        // Hide message after 3 seconds
+        setTimeout(() => {
+          cartMessage.style.display = "none";
+        }, 3000);
+      }
+
+      // Here you would add cart functionality
+      console.log(`Added to cart: Size ${selectedSize}`);
+    });
+  }
+
+  // Buy now functionality
+  if (buyNowBtn) {
+    buyNowBtn.addEventListener("click", () => {
+      if (!selectedSize) {
+        // Show size warning
+        if (sizeMessage) {
+          sizeMessage.textContent = "Vælg venligst en størrelse";
+          sizeMessage.style.display = "inline";
+        }
+        return;
+      }
+
+      // Here you would implement checkout functionality
+      console.log(`Proceeding to checkout: Size ${selectedSize}`);
+      // Redirect to checkout or open modal
+    });
+  }
+
+  // Collapsible details sections
+  detailSections.forEach((section) => {
+    const header = section.querySelector(".detail-header");
+
+    if (header) {
+      header.addEventListener("click", () => {
+        section.classList.toggle("active");
+
+        const icon = section.querySelector(".toggle-icon");
+        if (icon) {
+          icon.textContent = section.classList.contains("active") ? "-" : "+";
+        }
+      });
+    }
+  });
+</script>
