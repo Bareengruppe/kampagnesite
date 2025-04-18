@@ -125,7 +125,7 @@ h6 {
   color: var(--color-white);
 }
 
-/* Form elements */
+/* Forms */
 input {
   padding: 0.5rem;
   border: 1px solid var(--color-dark-gray);
