@@ -33,47 +33,58 @@ export async function getStaticPaths() {
 }
 
 const { item } = Astro.props;
-
-// Current main image (default to first image)
-let mainImageIndex = 0;
 ---
 
 <Layout>
   <div class="procontainer">
-    <div class="grid_2">
-      <div class="product-images">
-        <!-- Main product image -->
-        <div class="main-image">
-          <img src={item.img[mainImageIndex] || "/placeholder.svg"} alt={`${item.name} - Main image`} id="main-product-image" />
-        </div>
+    <div class="mobile-slideshow">
+      <div class="slide-container">
+        {
+          item.img.map((image, index) => (
+            <div class="slide" data-index={index}>
+              <img src={image || "/placeholder.svg"} alt={`${item.name} - Image ${index + 1}`} loading={index < 2 ? "eager" : "lazy"} />
+            </div>
+          ))
+        }
+      </div>
 
-        <!-- Thumbnails gallery -->
-        <div class="thumbnails">
-          {
-            item.img.map((image, index) => (
-              <div class={`thumbnail ${index === mainImageIndex ? "active" : ""}`}>
-                <img src={image || "/placeholder.svg"} alt={`${item.name} - Thumbnail ${index + 1}`} data-index={index} loading="lazy" />
-              </div>
-            ))
-          }
-        </div>
+      <!-- Slideshow controls -->
+      <button class="slide-control prev" aria-label="Previous image">
+        <span>&#10094;</span>
+      </button>
+      <button class="slide-control next" aria-label="Next image">
+        <span>&#10095;</span>
+      </button>
+
+      <!-- Slide indicators -->
+      <div class="slide-indicators">
+        {item.img.map((_, index) => <span class="indicator" data-index={index} />)}
+      </div>
+    </div>
+
+    <div class="product-content">
+      <div class="product-images">
+        {
+          item.img.map((image, index) => (
+            <div class="product-image">
+              <img src={image || "/placeholder.svg"} alt={`${item.name} - Image ${index + 1}`} loading={index < 2 ? "eager" : "lazy"} />
+            </div>
+          ))
+        }
       </div>
 
       <div class="productbox flexcol">
-        <!-- Breadcrumb navigation -->
         <div class="flexrow chainlink">
           <a href="../">Forside</a>
           <p>&gt;</p>
           <a href={item.slug}>{item.name}</a>
         </div>
 
-        <!-- Product details -->
         <p class="collection">{item.collection}</p>
         <h2 class="product-name">{item.name}</h2>
         <h3 class="product-price">{item.price} kr</h3>
         <p class="product-description">{item.description}</p>
 
-        <!-- Size selection -->
         <div class="flexcol size-section">
           <p>STØRRELSE <span class="size-message" id="size-message"></span></p>
           <div class="flexrow size-options">
@@ -115,7 +126,6 @@ let mainImageIndex = 0;
           </div>
         </div>
 
-        <!-- Actions -->
         <div class="flexcol action-section">
           <div class="flexrow">
             <button class="kurvbox" id="add-to-cart">Læg i kurv</button>
@@ -124,7 +134,6 @@ let mainImageIndex = 0;
           <div id="cart-message" class="cart-message"></div>
         </div>
 
-        <!-- Product details sections -->
         <div class="infoflexcol details-section">
           <div class="detail-header">
             <p>KOMPOSITION</p>
@@ -162,30 +171,6 @@ let mainImageIndex = 0;
 </Layout>
 
 <style>
-  /* Base styles */
-  p {
-    font-size: 90%;
-    margin: 0;
-  }
-
-  .chainlink {
-    font-size: 80%;
-  }
-
-  ul {
-    padding: 0 1rem;
-    margin: 0;
-  }
-
-  li {
-    font-size: 90%;
-  }
-
-  h2,
-  h3 {
-    margin: 0;
-  }
-
   /* Layout containers */
   .procontainer {
     width: 100%;
@@ -195,9 +180,9 @@ let mainImageIndex = 0;
     position: relative;
   }
 
-  .grid_2 {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+  .product-content {
+    display: flex;
+    flex-direction: row;
     gap: 40px;
   }
 
@@ -222,58 +207,114 @@ let mainImageIndex = 0;
     padding: 10px 0;
   }
 
-  /* Product images */
+  /* Product imgs */
   .product-images {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-  }
-
-  .main-image {
+    gap: 20px;
     width: 100%;
-    margin-bottom: 10px;
+    max-width: 600px;
   }
 
-  .main-image img {
+  .product-image {
+    width: 100%;
+  }
+
+  .product-image img {
     width: 100%;
     height: auto;
-    object-fit: cover;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
   }
 
-  .thumbnails {
+  /* Mobile slideshow */
+  .mobile-slideshow {
+    width: 100%;
+    position: relative;
+    margin-bottom: 30px;
+    display: none;
+    overflow: hidden;
+    height: auto;
+    max-height: 80vh;
+  }
+
+  .slide-container {
     display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
-  .thumbnail {
-    width: calc(20% - 8px);
-    cursor: pointer;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
-  }
-
-  .thumbnail:hover {
-    opacity: 1;
-  }
-
-  .thumbnail.active {
-    opacity: 1;
-  }
-
-  .thumbnail img {
+    transition: transform 0.4s ease;
     width: 100%;
-    height: auto;
+  }
+
+  .slide {
+    min-width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .slide img {
+    width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    display: block;
+  }
+
+  .slide-control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    font-size: 18px;
+  }
+
+  .slide-control.prev {
+    left: 10px;
+  }
+
+  .slide-control.next {
+    right: 10px;
+  }
+
+  .slide-indicators {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+  }
+
+  .indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .indicator.active {
+    background-color: rgba(0, 0, 0, 0.8);
   }
 
   /* Product details */
   .productbox {
-    width: 100%;
-    height: 750px;
+    width: 400px;
     padding: 0 1rem;
     margin: 0 auto;
     position: sticky;
     top: 5%;
+    height: fit-content;
   }
 
   .product-name {
@@ -311,7 +352,7 @@ let mainImageIndex = 0;
   .box {
     width: 60px;
     height: 50px;
-    border: 2px solid rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(0, 0, 0, 0.209);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -414,14 +455,27 @@ let mainImageIndex = 0;
   }
 
   /* Responsive design */
-  @media (max-width: 768px) {
-    .grid_2 {
-      grid-template-columns: 1fr;
+  @media (max-width: 900px) {
+    .procontainer {
+      padding: 1rem;
+    }
+
+    .product-content {
+      flex-direction: column;
+    }
+
+    .product-images {
+      display: none;
+    }
+
+    .mobile-slideshow {
+      display: block;
+      margin-bottom: 20px;
     }
 
     .productbox {
       position: relative;
-      height: auto;
+      width: 100%;
       top: 0;
       padding: 0;
     }
@@ -430,19 +484,22 @@ let mainImageIndex = 0;
       max-height: 200px;
     }
 
-    .thumbnail {
-      width: calc(25% - 8px);
+    .product-name {
+      font-size: 1.5rem;
+    }
+
+    .product-price {
+      font-size: 1.2rem;
     }
   }
 </style>
 
 <script>
+  // Kodet ved brug af v0
   // Initialize selected size
   let selectedSize = "";
 
   // Get DOM elements
-  const mainImage = document.getElementById("main-product-image");
-  const thumbnails = document.querySelectorAll(".thumbnail img");
   const sizeBoxes = document.querySelectorAll(".size-box");
   const sizeMessage = document.getElementById("size-message");
   const addToCartBtn = document.getElementById("add-to-cart");
@@ -450,24 +507,104 @@ let mainImageIndex = 0;
   const cartMessage = document.getElementById("cart-message");
   const detailSections = document.querySelectorAll(".details-section");
 
-  thumbnails.forEach((thumbnail) => {
-    thumbnail.addEventListener("click", () => {
-      const index = thumbnail.getAttribute("data-index");
+  // Mobile slideshow functionality
+  let currentSlide = 0;
+  const slides = document.querySelectorAll(".slide");
+  const indicators = document.querySelectorAll(".indicator");
+  const prevBtn = document.querySelector(".slide-control.prev");
+  const nextBtn = document.querySelector(".slide-control.next");
+  const slideContainer = document.querySelector(".slide-container");
 
-      // Update main image
-      if (mainImage && index !== null) {
-        mainImage.src = thumbnail.src;
+  // Initialize slideshow
+  function showSlide(index) {
+    if (!slideContainer || slides.length === 0) return;
 
-        // Update active thumbnail
-        document.querySelectorAll(".thumbnail").forEach((thumb, i) => {
-          if (i.toString() === index) {
-            thumb.classList.add("active");
-          } else {
-            thumb.classList.remove("active");
-          }
-        });
+    // Handle bounds
+    if (index < 0) index = slides.length - 1;
+    if (index >= slides.length) index = 0;
+
+    currentSlide = index;
+
+    // Move slide container
+    slideContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+    // Update indicators
+    indicators.forEach((indicator, i) => {
+      if (i === currentSlide) {
+        indicator.classList.add("active");
+      } else {
+        indicator.classList.remove("active");
       }
     });
+  }
+
+  // Set first slide and indicator as active initially
+  if (indicators.length > 0) {
+    indicators[0].classList.add("active");
+  }
+
+  // Add event listeners for slideshow navigation
+  if (prevBtn) {
+    prevBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      showSlide(currentSlide - 1);
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      showSlide(currentSlide + 1);
+    });
+  }
+
+  // Add click events to indicators
+  indicators.forEach((indicator, index) => {
+    indicator.addEventListener("click", (e) => {
+      e.preventDefault();
+      showSlide(index);
+    });
+  });
+
+  // Add swipe functionality
+  let touchStartX = 0;
+  let touchEndX = 0;
+
+  const mobileSlideshow = document.querySelector(".mobile-slideshow");
+  if (mobileSlideshow) {
+    mobileSlideshow.addEventListener(
+      "touchstart",
+      (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      },
+      { passive: true }
+    );
+
+    mobileSlideshow.addEventListener(
+      "touchend",
+      (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+      },
+      { passive: true }
+    );
+  }
+
+  function handleSwipe() {
+    const threshold = 50; // Minimum distance to consider as swipe
+
+    if (touchEndX < touchStartX - threshold) {
+      // Swipe left - next slide
+      showSlide(currentSlide + 1);
+    } else if (touchEndX > touchStartX + threshold) {
+      // Swipe right - previous slide
+      showSlide(currentSlide - 1);
+    }
+  }
+
+  // Initialize slideshow on page load
+  document.addEventListener("DOMContentLoaded", () => {
+    showSlide(0);
   });
 
   // Size selection functionality
