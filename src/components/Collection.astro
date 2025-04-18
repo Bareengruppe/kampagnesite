@@ -26,19 +26,21 @@ try {
 }
 ---
 
-<div class="collection">
-  <div class="header">
-    <h1>Collection</h1>
-    <p>Udforsk vores unikke streetwear inspireret af kunst</p>
+<section id="collection">
+  <div class="collection">
+    <div class="header">
+      <h1>Collection</h1>
+      <p>Udforsk vores unikke streetwear inspireret af kunst</p>
+    </div>
+    <div class="products">
+      {
+        data.map((product: Product) => {
+          return <Cards data={product} />;
+        })
+      }
+    </div>
   </div>
-  <div class="products">
-    {
-      data.map((product: Product) => {
-        return <Cards data={product} />;
-      })
-    }
-  </div>
-</div>
+</section>
 
 <style>
   .product {
