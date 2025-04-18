@@ -18,10 +18,10 @@ import studioshot from "../assets/studioshot.png";
     display: grid;
     grid-template-columns: 1fr;
     gap: 20px;
-    margin: 50px auto;
+    margin: 0 auto;
     width: 100%;
     max-width: 1200px;
-    padding: 50px;
+    padding-inline: 50px;
   }
 
   .text-box {
@@ -30,11 +30,15 @@ import studioshot from "../assets/studioshot.png";
     flex-grow: 1;
     min-width: 300px;
     max-width: 400px;
-    margin: 20px auto;
+    margin: 50px auto;
     gap: 20px;
     padding: 10px;
   }
 
+  .img-box {
+    transform: translateY(40px);
+    z-index: 1000;
+  }
   @media (min-width: 1000px) {
     section {
       grid-template-columns: repeat(2, 1fr);

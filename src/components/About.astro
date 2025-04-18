@@ -14,6 +14,7 @@ import statueImage from "../assets/statue1.png";
 
 <style>
   .about-section {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -24,23 +25,37 @@ import statueImage from "../assets/statue1.png";
     height: 120vh;
     color: white;
     padding: 50px;
+    overflow: hidden;
+  }
+
+  .about-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1;
   }
 
   .content {
+    position: relative;
     max-width: 400px;
     padding: 20px;
     border-radius: 8px;
-    z-index: 1000;
+    z-index: 2;
   }
 
   .content h2 {
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 2.5vw, 2.5rem);
     margin-bottom: 20px;
   }
 
   .content p {
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
     line-height: 1.6;
+    font-weight: 200;
     margin-bottom: 10px;
   }
 
